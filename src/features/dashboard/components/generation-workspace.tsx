@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { motion } from "framer-motion";
 
 import {
@@ -39,6 +39,27 @@ export function GenerationWorkspace() {
   const [result, setResult] = useState<GenerateEmailResult | null>(null);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [resultMinHeight, setResultMinHeight] = useState<number | null>(null);
+  const formColumnRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const node = formColumnRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    const updateHeight = () => {
+      setResultMinHeight(node.getBoundingClientRect().height);
+    };
+
+    updateHeight();
+
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
 
   function handleGenerate() {
     const parsed = generateEmailSchema.safeParse(form);
@@ -92,9 +113,9 @@ export function GenerationWorkspace() {
   }
 
   return (
-    <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
       <motion.div
-        className="h-full"
+        ref={formColumnRef}
         initial={{ opacity: 0, x: -18 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.45 }}
@@ -110,12 +131,11 @@ export function GenerationWorkspace() {
         />
       </motion.div>
       <motion.div
-        className="h-full"
         initial={{ opacity: 0, x: 18 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.45, delay: 0.05 }}
       >
-        <GenerationResult isPending={isPending} result={result} />
+        <GenerationResult isPending={isPending} minHeight={resultMinHeight} result={result} />
       </motion.div>
     </div>
   );

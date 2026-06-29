@@ -48,7 +48,7 @@ export function GenerationForm({
   value,
 }: GenerationFormProps) {
   return (
-    <Card className="flex h-full flex-col p-6 sm:p-8">
+    <Card className="flex flex-col p-6 sm:p-8">
       <CardHeader>
         <Badge>Generator</Badge>
         <CardTitle>Create a polished email in seconds</CardTitle>

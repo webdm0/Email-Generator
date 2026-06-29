@@ -10,12 +10,13 @@ import { formatRelativeProviderLabel } from "@/lib/utils";
 
 type GenerationResultProps = {
   isPending: boolean;
+  minHeight: number | null;
   result: GenerateEmailResult | null;
 };
 
-export function GenerationResult({ isPending, result }: GenerationResultProps) {
+export function GenerationResult({ isPending, minHeight, result }: GenerationResultProps) {
   return (
-    <Card className="flex h-full flex-col p-6 sm:p-8">
+    <Card className="flex flex-col p-6 sm:p-8" style={minHeight ? { minHeight } : undefined}>
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div>
           <Badge className="mb-3">{formatRelativeProviderLabel(result?.mode)}</Badge>
